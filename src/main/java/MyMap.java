@@ -138,12 +138,10 @@ public class MyMap <K,V> implements Map<K,V>{
         return null;
     }
 
-    public void putAll(Map m) {
-        Map.Entry<K,V>  x ;
-        for (Object e : m.entrySet()) {
-            x = (Map.Entry<K,V>) e;
-            K key = x.getKey();
-            V value = x.getValue();
+    public void putAll(Map<? extends K, ? extends V> m) {
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+            K key = e.getKey();
+            V value = e.getValue();
             put(key,value);
         }
 
