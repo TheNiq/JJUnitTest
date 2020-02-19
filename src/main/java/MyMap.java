@@ -1,8 +1,8 @@
 
 import java.util.*;
 
-public class MyMap implements Map {
-    private Entry [] table = new Entry[capacity];
+public class MyMap <K,V> implements Map<K,V>{
+    private Entry<K,V> [] table = new Entry[capacity];
     private static int capacity = 16;
     private int size = 0;
     private float loadFactor = 0.75f;
@@ -24,7 +24,7 @@ public class MyMap implements Map {
                 return true;
             }
             if(table[index].next != null){
-                Entry current = table[index];
+                Entry<K,V> current = table[index];
                 while (current.next != null){
                     current = current.next;
                     if(current.key == key || key.equals(current.key)){
@@ -44,7 +44,7 @@ public class MyMap implements Map {
                     return true;
                 }
                 if(table[i].next != null){
-                    Entry current = table[i];
+                    Entry<K,V> current = table[i];
                     while (current.next != null){
                         current = current.next;
                         if(current.value.equals(value)){
@@ -57,10 +57,10 @@ public class MyMap implements Map {
         return false;
     }
 
-    public Object get(Object key) {
+    public V get(Object key) {
         int index = indexFor(hash(key.hashCode()), table.length);
         if(table[index].next != null){
-            Entry current = table[index];
+            Entry<K,V>current = table[index];
             while (current != null){
                 if(current.key.equals(key)){
                     return current.value;
@@ -71,7 +71,7 @@ public class MyMap implements Map {
         return table[index].value;
     }
 
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
         int hash = hash(key.hashCode());
         int index = indexFor(hash, table.length);
         if(table[index] != null ){
@@ -100,34 +100,34 @@ public class MyMap implements Map {
         return null;
     }
 
-    public Object remove(Object key) {
+    public V remove(Object key) {
         int hash = hash(key.hashCode());
         int index = indexFor(hash, table.length);
         if(table[index].hash == hash && table[index].key == key || key.equals(table[index].key)){
             if(table[index].next != null){
-                Object valueDelete = table[index].value;
+                V valueDelete = table[index].value;
                 table[index] = table[index].next;
                 table[index].setNext(null);
                 size--;
                 return valueDelete;
             }
-            Object valueDelete = table[index].value;
+            V valueDelete = table[index].value;
             table[index] = null;
             size--;
             return valueDelete;
         }
-        Entry current = table[index];
+        Entry<K,V> current = table[index];
         while (current.next != null){
-            Entry oldEntry = current;
+            Entry<K,V> oldEntry = current;
             current = current.next;
             if(current.hash == hash && current.key == key || key.equals(current.key)){
                 if(current.next != null){
-                    Object valueDelete = current.value;
+                    V valueDelete = current.value;
                     oldEntry.setNext(current.next);
                     size--;
                     return valueDelete;
                 }else {
-                    Object valueDelete = current.value;
+                    V valueDelete = current.value;
                     oldEntry.setNext(null);
                     size--;
                     return valueDelete;
@@ -139,11 +139,11 @@ public class MyMap implements Map {
     }
 
     public void putAll(Map m) {
-        Map.Entry  x ;
+        Map.Entry<K,V>  x ;
         for (Object e : m.entrySet()) {
-            x = (Map.Entry) e;
-            Object key = x.getKey();
-            Object value = x.getValue();
+            x = (Map.Entry<K,V>) e;
+            K key = x.getKey();
+            V value = x.getValue();
             put(key,value);
         }
 
@@ -156,13 +156,13 @@ public class MyMap implements Map {
         threshold = table.length * loadFactor;
     }
 
-    public Set keySet() {
-        Set keys = new HashSet();
+    public Set<K> keySet() {
+        Set<K> keys = new HashSet<>();
         for(int i =0;i < table.length; i++){
             if (table[i] != null){
                 keys.add(table[i].key);
                 if(table[i].next != null){
-                    Entry current = table[i];
+                    Entry<K,V> current = table[i];
                     while (current.next != null){
                         current = current.next;
                         keys.add(current.key);
@@ -173,13 +173,13 @@ public class MyMap implements Map {
         return keys;
     }
 
-    public Collection values() {
-        Collection collectionValues = new ArrayList();
+    public Collection<V> values() {
+        Collection<V> collectionValues = new ArrayList<>();
         for(int i =0;i < table.length; i++){
             if (table[i] != null){
                 collectionValues.add(table[i].value);
                 if(table[i].next != null){
-                    Entry current = table[i];
+                    Entry<K,V> current = table[i];
                     while (current.next != null){
                         current = current.next;
                         collectionValues.add(current.value);
@@ -190,13 +190,13 @@ public class MyMap implements Map {
         return collectionValues;
     }
 
-    public Set<Entry> entrySet() {
-        Set<Entry> setEntry = new HashSet<Entry>();
+    public Set<Map.Entry<K, V>> entrySet() {
+        Set<Map.Entry<K,V>> setEntry = new HashSet<>();
         for(int i =0;i < table.length; i++){
             if (table[i] != null){
                 setEntry.add(table[i]);
                 if(table[i].next != null){
-                    Entry current = table[i];
+                    Entry<K,V> current = table[i];
                     while (current.next != null){
                         current = current.next;
                         setEntry.add(current);
@@ -221,28 +221,28 @@ public class MyMap implements Map {
 
     private void resize(){
         int newCapacity = capacity * 2;
-        Entry[] newTable = new Entry[newCapacity];
+        Entry<K,V> [] newTable = new Entry[newCapacity];
         transfer(newTable);
         threshold =  newCapacity * loadFactor;
         System.out.println("__------------------------");
     }
-    private void transfer(Entry[] newTable){
+    private void transfer(Entry<K,V>[] newTable){
         size = 0;
-        Entry[] oldTable = table;
+        Entry<K,V>[] oldTable = table;
         table = newTable;
         for(int i =0;i < oldTable.length;i++){
-            Entry x =  oldTable[i];
+            Entry<K,V> x =  oldTable[i];
             if( x != null){
-                Object key = x.key;
-                Object value = x.value;
+                K key = x.key;
+                V value = x.value;
                 int hash = x.hash;
                 int index = indexFor(hash, newTable.length);
                 addEntry(hash,value,index,key);
                 if(x.next != null){
                     while (x.next != null){
                         x = x.next;
-                        Object key2 = x.key;
-                        Object value2 = x.value;
+                        K key2 = x.key;
+                        V value2 = x.value;
                         int hash2 = x.hash;
                         int index2 = indexFor(hash2, newTable.length);
                         if(table[index2] != null){
@@ -257,15 +257,15 @@ public class MyMap implements Map {
 
         }
     }
-    private void addEntry(int hash, Object value, int index,Object key){
-        Entry entry = new Entry(hash,key,value,null);
+    private void addEntry(int hash, V value, int index,K key){
+        Entry<K,V> entry = new Entry<>(hash,key,value,null);
         table[index] = entry;
         size++;
     }
-    private void addIfHasCollision(int hash, Object value, int index,Object key){
-        Entry current = table[index];
+    private void addIfHasCollision(int hash, V value, int index,K key){
+        Entry<K,V> current = table[index];
         while (current.next != null) {
-            Entry prev = current;
+            Entry<K,V>  prev = current;
             current = current.next;
             if(current.hash ==  hash && current.key == key || key.equals(current.key)){
                 current = new Entry(hash,key,value,null);
@@ -273,7 +273,7 @@ public class MyMap implements Map {
                 return;
             }
         }
-        current.next = new Entry(hash,key,value,null);
+        current.next = new Entry<>(hash,key,value,null);
         size++;
 
     }
@@ -292,33 +292,50 @@ public class MyMap implements Map {
 
 
 
-    public static class Entry {
+    public static class Entry <K,V> implements Map.Entry<K,V> {
         int hash;
-        Object key;
-        Object value;
-        Entry next;
+        K key;
+        V value;
+        Entry<K,V> next;
 
-        public Entry(int hash, Object key, Object value, Entry next) {
+        public Entry(int hash, K key, V value, Entry<K,V> next) {
             this.hash = hash;
             this.key = key;
             this.value = value;
             this.next = next;
         }
 
-        public void setNext(Entry next) {
+        public void setNext(Entry<K,V>  next) {
             this.next = next;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(Object value) {
+            return null;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Entry entry = (Entry) o;
+            Entry<?, ?> entry = (Entry<?, ?>) o;
             return hash == entry.hash &&
                     Objects.equals(key, entry.key) &&
                     Objects.equals(value, entry.value) &&
                     Objects.equals(next, entry.next);
         }
+
+
 
         @Override
         public String toString() {

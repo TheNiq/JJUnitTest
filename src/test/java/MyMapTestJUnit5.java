@@ -6,15 +6,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class MyMapTestJUnit5 {
-    private MyMap map;
+    private MyMap<String,Integer> map;
 
 
     @BeforeEach
     void setup(){
-        map = new MyMap();
+        map = new MyMap<>();
         map.put("google.com", 123);
         map.put("youtube.com", 173);
         map.put("google.com/3",1);
@@ -37,7 +38,7 @@ public class MyMapTestJUnit5 {
         }
         @Test
         void sizeAfterPutValue(){
-            map.put("netflix.com", "54.77.143.196");
+            map.put("netflix.com", 547714319);
             Assertions.assertEquals(10, map.size());
         }
         @Test
@@ -94,7 +95,7 @@ public class MyMapTestJUnit5 {
     }
     @Test
     void putOneValueTest(){
-        map.put("Netflix", "54.77.143.196");
+        map.put("Netflix", 547714319);
         Assertions.assertTrue(map.containsKey("Netflix"));
     }
     @Test
@@ -105,9 +106,9 @@ public class MyMapTestJUnit5 {
     @ParameterizedTest
     @ValueSource(strings = {"oracle.com","netflix.com"})
     void putAllTest(String key){
-        HashMap hashMap = new HashMap();
-        hashMap.put("oracle.com", "137.254.120.50");
-        hashMap.put("netflix.com","54.77.143.196");
+        HashMap<String,Integer> hashMap = new HashMap<>();
+        hashMap.put("oracle.com", 1372541205);
+        hashMap.put("netflix.com",547714319);
         map.putAll(hashMap);
         Assertions.assertTrue(map.containsKey(key));
     }
@@ -121,7 +122,7 @@ public class MyMapTestJUnit5 {
     @ValueSource(strings = {"google.com","youtube.com", "google.com/3", "google.com/4", "google.com/5",
             "google.com/6", "google.com/9", "google.com/10" , "google.com/11"})
     void keySetTest(String key){
-        Set keys = map.keySet();
+        Set<String> keys = map.keySet();
         Assertions.assertTrue(keys.contains(key));
 
     }
@@ -129,7 +130,7 @@ public class MyMapTestJUnit5 {
     @ParameterizedTest
     @ValueSource(ints = {123, 173,1,2,3,4,7,9,10})
     void valuesTest(int value){
-        Collection values = map.values();
+        Collection<Integer> values = map.values();
         Assertions.assertEquals(values,map.values());
         Assertions.assertTrue(values.containsAll(map.values()));
         Assertions.assertTrue(values.contains(value));
@@ -137,9 +138,9 @@ public class MyMapTestJUnit5 {
 
     @Test
     void entrySetTest(){
-        Set<MyMap.Entry> entries = map.entrySet();
+        Set<Map.Entry<String,Integer>> entries = map.entrySet();
         Assertions.assertEquals(entries, map.entrySet());
-        Assertions.assertTrue( map.entrySet().size() == 9);
+        Assertions.assertEquals(9 ,map.entrySet().size());
     }
 
 
