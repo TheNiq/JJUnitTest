@@ -1,5 +1,6 @@
-
+package Home20;
 import java.util.*;
+
 
 public class MyMap <K,V> implements Map<K,V>{
     private Entry<K,V> [] table = new Entry[capacity];
@@ -18,6 +19,13 @@ public class MyMap <K,V> implements Map<K,V>{
     }
 
     public boolean containsKey(Object key) {
+        try {
+            if(key == null){
+                throw new NullPointerException("My");
+            }
+        }catch (NullPointerException e){
+            return false;
+        }
         int index = indexFor(hash(key.hashCode()),table.length);
         if(table[index] != null){
             if(table[index].key == key || key.equals(table[index].key)){
@@ -58,7 +66,21 @@ public class MyMap <K,V> implements Map<K,V>{
     }
 
     public V get(Object key) {
+        try {
+            if(key == null){
+                throw new NullPointerException();
+            }
+        }catch (NullPointerException x ){
+            return null;
+        }
         int index = indexFor(hash(key.hashCode()), table.length);
+        try {
+            if(table[index] == null){
+                throw new NullPointerException();
+            }
+        }catch (NullPointerException x){
+            return null;
+        }
         if(table[index].next != null){
             Entry<K,V>current = table[index];
             while (current != null){
@@ -72,6 +94,14 @@ public class MyMap <K,V> implements Map<K,V>{
     }
 
     public V put(K key, V value) {
+        try {
+            if(key == null){
+                throw new NullPointerException();
+            }
+
+        }catch (NullPointerException x){
+            return null;
+        }
         int hash = hash(key.hashCode());
         int index = indexFor(hash, table.length);
         if(table[index] != null ){
@@ -101,6 +131,14 @@ public class MyMap <K,V> implements Map<K,V>{
     }
 
     public V remove(Object key) {
+        try {
+            if(key == null){
+                throw new NullPointerException();
+            }
+
+        }catch (NullPointerException x){
+            return null;
+        }
         int hash = hash(key.hashCode());
         int index = indexFor(hash, table.length);
         if(table[index].hash == hash && table[index].key == key || key.equals(table[index].key)){
